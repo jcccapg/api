@@ -1,11 +1,10 @@
-const express = require('express')
-const nodeFetch = require('node-fetch')
+import express, { Request, Response } from 'express'
 const app = express()
 const port = 3000
 
-app.get('/', async (req, res) => {
+app.get('/', async (_req: Request, res: Response) => {
     const response = await fetch('https://jsonplaceholder.org/posts');
-    const data = await response.json(response);
+    const data = await response.json();
 
     res.send(data);
 })
@@ -13,5 +12,3 @@ app.get('/', async (req, res) => {
 app.listen(port, () => {
     console.log(`Listening on port ${port}`)
 })
-
-console.log("Hola Mundo")
