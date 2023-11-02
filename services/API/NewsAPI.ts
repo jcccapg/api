@@ -3,6 +3,7 @@ import InvalidURL from "../../error/InvalidURL";
 import nodeFetch from 'node-fetch';
 import https from 'https';
 import { NewsRequestData } from "../../type/RequestData";
+import { ResponseError, RESPONSE_ERROR_CODE } from "../../type/ResponseError";
 
 class NewsAPI {
     public async getCountryNewsByName(data : NewsRequestData){
@@ -30,8 +31,8 @@ class NewsAPI {
             const news : Promise<any[]> = await response.json() as Promise<any[]>;
             return news; 
         } catch(e : any){
-            console.log(e);
-            return "";
+            const response : ResponseError = {code: RESPONSE_ERROR_CODE.FETCH_ERROR, msg: e.message}
+            return response
         }
     }
 }

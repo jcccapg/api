@@ -1,6 +1,7 @@
 import InvalidAPIKey from "../../error/InvalidApiKey";
 import InvalidURL from "../../error/InvalidURL";
 import { WeatherRequestData } from "../../type/RequestData";
+import { ResponseError, RESPONSE_ERROR_CODE } from "../../type/ResponseError";
 
 class WeatherAPI {
 
@@ -22,8 +23,8 @@ class WeatherAPI {
             const weather : Promise<any[]> = await response.json() as Promise<any[]>;
             return weather;  
         } catch(e : any){
-            console.log(e)
-            return "";
+            const response : ResponseError = {code: RESPONSE_ERROR_CODE.FETCH_ERROR, msg: e.message}
+            return response
         }
     }
 }

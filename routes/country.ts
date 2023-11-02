@@ -7,6 +7,7 @@ import ValidatorInfoParamsImpl from "../services/validators/ValidatorInfoParamsI
 import ValidatorWeatherParamsImpl from "../services/validators/ValidatorWeatherParamsImpl";
 import ValidatorNewsParamsImpl from "../services/validators/ValidatorNewsParamsImpl";
 import { InfoRequestData, NewsRequestData, WeatherRequestData } from "../type/RequestData";
+import { ResponseError, RESPONSE_ERROR_CODE } from "../type/ResponseError";
 
 const router = express.Router();
 
@@ -15,7 +16,8 @@ function middlewareInfoParamCheck(req: Request, res: Response, next : NextFuncti
 
     const validator : IValidator<InfoRequestData> = new ValidatorInfoParamsImpl();
     if(!validator.validar({name})){
-        res.send({});
+        const response : ResponseError = {code: RESPONSE_ERROR_CODE.INVALID_PARAMETERS_ERROR , msg: "Parametro invalido"} 
+        res.send(response);
         return
     }
     next();
@@ -25,7 +27,8 @@ function middlewareNewsParamCheck(req: Request, res: Response, next : NextFuncti
     const country : any = req.query.name
     const validator : IValidator<NewsRequestData> = new ValidatorNewsParamsImpl();
     if(!validator.validar({name: country})){
-        res.send({});
+        const response : ResponseError = {code: RESPONSE_ERROR_CODE.INVALID_PARAMETERS_ERROR , msg: "Parametro invalido"} 
+        res.send(response);
         return;
     }
     next();
@@ -37,7 +40,8 @@ function middlewareWeatherParamCheck(req: Request, res: Response, next: NextFunc
 
     const validator : IValidator<WeatherRequestData> = new ValidatorWeatherParamsImpl();
     if(!validator.validar({lat: latitude, lon: long})){
-        res.send({});
+        const response : ResponseError = {code: RESPONSE_ERROR_CODE.INVALID_PARAMETERS_ERROR , msg: "Parametro invalido"} 
+        res.send(response);
         return;
     }
     next();

@@ -1,35 +1,27 @@
-import InvalidURL from "../../error/InvalidURL";
+import { ResponseError, RESPONSE_ERROR_CODE } from "../../type/ResponseError";
 import { InfoRequestData } from "../../type/RequestData";
+import nodeFetch from 'node-fetch';
+import InvalidURL from "../../error/InvalidURL";
 
 class InfoAPI {
-    public async getCountriesInfo() : Promise<any[]> {
-        const url : string | undefined = process.env.COUNTRY_INFO_API;
-        
+
+    public async getCountryInfoByName(data : InfoRequestData){
         try{
+            const url : string | undefined = process.env.COUNTRY_INFO_API;
+
             if(url == "" || url == null || url == undefined){
                 throw new InvalidURL("URL para info no configurada");
             }
 
-            const response = (await fetch(url));
-            const countries : Promise<any[]> = await response.json() as Promise<any[]>;
-            return countries;    
-        }
-        catch(e: any){
-            console.log(e)
-            return [];
-        }
-    }
-
-    public async getCountryInfoByName(data : InfoRequestData){
-        try{
             process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-            const countryList : any[] = await this.getCountriesInfo();
-            const searchedCountry = countryList.find((country : any) => country.name.common.toLowerCase() == data.name.toLowerCase());
+            console.log(`${url}/${data.name}`);
+            const response : any = await nodeFetch(`${url}/${data.name}`);
+            const country = await response.json();
 
-            return searchedCountry;
+            return country;
         } catch(e : any){
-            console.log(e);
-            return ""
+            const response : ResponseError = {code: RESPONSE_ERROR_CODE.FETCH_ERROR, msg: e.message}
+            return response
         }
     }
 }
