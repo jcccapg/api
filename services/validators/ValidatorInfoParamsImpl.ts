@@ -1,14 +1,11 @@
 import { InfoRequestData } from "../../type/RequestData";
 import IValidator from "./IValidator";
+import _ from "lodash";
 
-class ValidatorInfoParamsImpl implements IValidator<InfoRequestData>{
-    public validar(data: InfoRequestData): boolean {
-        if(data.name == undefined || data.name == null || data.name == ""){
-            return false;
-        }
-
-        return true;
-    }
+class ValidatorInfoParamsImpl implements IValidator<InfoRequestData> {
+  public validar(data: InfoRequestData): boolean {
+    return _.isEmpty(data.name);
+  }
 }
 
 export default ValidatorInfoParamsImpl;
