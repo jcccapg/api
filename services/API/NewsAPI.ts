@@ -1,5 +1,5 @@
-import InvalidAPIKey from "../../error/InvalidApiKey";
-import InvalidURL from "../../error/InvalidURL";
+import InvalidAPIKey from "../../error/InvalidAPIKeyError";
+import InvalidURL from "../../error/InvalidURLError";
 import nodeFetch from 'node-fetch';
 import https from 'https';
 import { NewsRequestData } from "../../type/RequestData";

@@ -1,7 +1,7 @@
 import { ResponseError, RESPONSE_ERROR_CODE } from "../../type/ResponseError";
 import { InfoRequestData } from "../../type/RequestData";
 import nodeFetch from 'node-fetch';
-import InvalidURL from "../../error/InvalidURL";
+import InvalidURL from "../../error/InvalidURLError";
 
 class InfoAPI {
 

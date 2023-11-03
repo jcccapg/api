@@ -1,5 +1,5 @@
-import InvalidAPIKey from "../../error/InvalidApiKey";
-import InvalidURL from "../../error/InvalidURL";
+import InvalidAPIKey from "../../error/InvalidAPIKeyError";
+import InvalidURL from "../../error/InvalidURLError";
 import { WeatherRequestData } from "../../type/RequestData";
 import { ResponseError, RESPONSE_ERROR_CODE } from "../../type/ResponseError";
 
