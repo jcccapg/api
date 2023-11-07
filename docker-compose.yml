@@ -1,0 +1,20 @@
+services:
+  api:
+    environment:
+      - COUNTRY_INFO_API=https://restcountries.com/v3.1/name
+      - COUNTRY_NEWS_API=https://newsapi.org/v2/top-headlines
+      - COUNTRY_NEWS_KEY=038f5871db804fc0b3ea8ca78b2f63c8
+      - COUNTRY_WEATHER_API=https://api.openweathermap.org/data/2.5/weather
+      - COUNTRY_WEATHER_KEY=ccdd9c1858821e49a436098817aa308e
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      target: base
+    volumes:
+      - ./src:/home/node/api/src
+    container_name: api-docker
+    expose:
+      - '3000'
+    ports:
+      - '3000:3000'
+    command: npm run start
