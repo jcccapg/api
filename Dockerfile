@@ -1,9 +1,9 @@
 FROM node:lts-alpine
 
+WORKDIR /usr/src
+RUN apk update && apk add git
+RUN git clone --branch Nicolas_Docker https://github.com/jcccapg/api.git /usr/src/api
 WORKDIR /usr/src/api
-COPY "package.json" "./"
-COPY "tsconfig.json" "./"
-COPY . .
 
 ENV COUNTRY_INFO_API=https://restcountries.com/v3.1/name
 ENV COUNTRY_NEWS_API=https://newsapi.org/v2/top-headlines
