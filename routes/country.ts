@@ -48,7 +48,7 @@ function middlewareWeatherParamCheck(req: Request, res: Response, next: NextFunc
 }
 
 router.get("/info", middlewareInfoParamCheck, async (req: Request, res: Response) => {
-    const name : any = req.query.name;
+    const name : any = req.query.data;
     const infoAPI : InfoAPI = new InfoAPI();
     res.send( await infoAPI.getCountryInfoByName({name}));
 });

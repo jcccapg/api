@@ -2,26 +2,44 @@ import { ResponseError, RESPONSE_ERROR_CODE } from "../../type/ResponseError";
 import { InfoRequestData } from "../../type/RequestData";
 import nodeFetch from 'node-fetch';
 import InvalidURL from "../../error/InvalidURLError";
+import { CircuitBreaker } from '../../utils/CircuitBreaker';
+
+interface InfoRequest {
+    data: InfoRequestData;
+}
 
 class InfoAPI {
+    private countryBreaker: CircuitBreaker<string>;
 
-    public async getCountryInfoByName(data : InfoRequestData){
-        try{
-            const url : string | undefined = process.env.COUNTRY_INFO_API;
+    constructor() {
+        this.countryBreaker = new CircuitBreaker<string>(this.callApi, {
+            failureThreshold: 3,
+            successThreshold: 2,
+            timeout: 20000,
+            resetTimeout: 30000
+        });
+    }
 
-            if(url == "" || url == null || url == undefined){
-                throw new InvalidURL("URL para info no configurada");
-            }
+    public async getCountryInfoByName({name}: InfoRequestData) {
+        return await this.countryBreaker.exec(name);
+    }
 
-            process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-            console.log(`${url}/${data.name}`);
-            const response : any = await nodeFetch(`${url}/${data.name}`);
+    private async callApi(name: string) {
+        const url: string | undefined = process.env.COUNTRY_INFO_API;
+
+        if (url == "" || url == null || url == undefined) {
+            throw new InvalidURL("URL para info no configurada");
+        }
+
+        process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+        console.log(`${url}/${name}`);
+
+        try {
+            const response = await nodeFetch(`${url}/${name}`);
             const country = await response.json();
-
             return country;
-        } catch(e : any){
-            const response : ResponseError = {code: RESPONSE_ERROR_CODE.FETCH_ERROR, msg: e.message}
-            return response
+        } catch (e: any) {
+            throw new Error(e.message);
         }
     }
 }
