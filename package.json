@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node dist/index.js",
-    "build": "tsc -p .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc -p . && npm run sentry:sourcemaps",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org capg-00 --project api ./dist && sentry-cli sourcemaps upload --org capg-00 --project api ./dist"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,9 @@
   },
   "homepage": "https://github.com/jcccapg/api#readme",
   "dependencies": {
+    "@sentry/cli": "^2.21.4",
+    "@sentry/node": "^7.80.0",
+    "@sentry/profiling-node": "^1.2.6",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "lodash": "^4.17.21",

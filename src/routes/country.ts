@@ -8,39 +8,42 @@ import ValidatorWeatherParamsImpl from "../services/validators/ValidatorWeatherP
 import ValidatorNewsParamsImpl from "../services/validators/ValidatorNewsParamsImpl";
 import { InfoRequestData, NewsRequestData, WeatherRequestData } from "../type/RequestData";
 import { ResponseError, RESPONSE_ERROR_CODE } from "../type/ResponseError";
+import * as Sentry from "@sentry/node";
 
 const router = express.Router();
 
-function middlewareInfoParamCheck(req: Request, res: Response, next : NextFunction){
-    const name : any = req.query.name
+function middlewareInfoParamCheck(req: Request, res: Response, next: NextFunction) {
+    Sentry.captureMessage("Something went wrong");
+    const name: any = req.query.name
 
-    const validator : IValidator<InfoRequestData> = new ValidatorInfoParamsImpl();
-    if(!validator.validar({name})){
-        const response : ResponseError = {code: RESPONSE_ERROR_CODE.INVALID_PARAMETERS_ERROR , msg: "Parametro invalido"} 
+    const validator: IValidator<InfoRequestData> = new ValidatorInfoParamsImpl();
+    if (!validator.validar({ name })) {
+        const response: ResponseError = { code: RESPONSE_ERROR_CODE.INVALID_PARAMETERS_ERROR, msg: "Parametro invalido" }
+        Sentry.captureException(`middlewareInfoParamCheck::${response}`);
         res.send(response);
         return
     }
     next();
 }
 
-function middlewareNewsParamCheck(req: Request, res: Response, next : NextFunction){
-    const country : any = req.query.name
-    const validator : IValidator<NewsRequestData> = new ValidatorNewsParamsImpl();
-    if(!validator.validar({name: country})){
-        const response : ResponseError = {code: RESPONSE_ERROR_CODE.INVALID_PARAMETERS_ERROR , msg: "Parametro invalido"} 
+function middlewareNewsParamCheck(req: Request, res: Response, next: NextFunction) {
+    const country: any = req.query.name
+    const validator: IValidator<NewsRequestData> = new ValidatorNewsParamsImpl();
+    if (!validator.validar({ name: country })) {
+        const response: ResponseError = { code: RESPONSE_ERROR_CODE.INVALID_PARAMETERS_ERROR, msg: "Parametro invalido" }
         res.send(response);
         return;
     }
     next();
 }
 
-function middlewareWeatherParamCheck(req: Request, res: Response, next: NextFunction){
-    const latitude : any = req.query.lat;
-    const long : any = req.query.long
+function middlewareWeatherParamCheck(req: Request, res: Response, next: NextFunction) {
+    const latitude: any = req.query.lat;
+    const long: any = req.query.long
 
-    const validator : IValidator<WeatherRequestData> = new ValidatorWeatherParamsImpl();
-    if(!validator.validar({lat: latitude, lon: long})){
-        const response : ResponseError = {code: RESPONSE_ERROR_CODE.INVALID_PARAMETERS_ERROR , msg: "Parametro invalido"} 
+    const validator: IValidator<WeatherRequestData> = new ValidatorWeatherParamsImpl();
+    if (!validator.validar({ lat: latitude, lon: long })) {
+        const response: ResponseError = { code: RESPONSE_ERROR_CODE.INVALID_PARAMETERS_ERROR, msg: "Parametro invalido" }
         res.send(response);
         return;
     }
@@ -48,24 +51,24 @@ function middlewareWeatherParamCheck(req: Request, res: Response, next: NextFunc
 }
 
 router.get("/info", middlewareInfoParamCheck, async (req: Request, res: Response) => {
-    const name : any = req.query.name;
-    const infoAPI : InfoAPI = new InfoAPI();
-    res.send( await infoAPI.getCountryInfoByName({name}));
+    const name: any = req.query.name;
+    const infoAPI: InfoAPI = new InfoAPI();
+    res.send(await infoAPI.getCountryInfoByName({ name }));
 });
 
 router.get("/news", middlewareNewsParamCheck, async (req: Request, res: Response) => {
-    const name : any = req.query.name;
+    const name: any = req.query.name;
 
-    const newsAPI : NewsAPI = new NewsAPI();
-    res.send(await newsAPI.getCountryNewsByName({name}));    
+    const newsAPI: NewsAPI = new NewsAPI();
+    res.send(await newsAPI.getCountryNewsByName({ name }));
 });
 
 router.get("/weather", middlewareWeatherParamCheck, async (req: Request, res: Response,) => {
-    const latitude : any = req.query.lat;
-    const long : any = req.query.long
+    const latitude: any = req.query.lat;
+    const long: any = req.query.long
 
-    const weatherAPI : WeatherAPI = new WeatherAPI();
-    res.send(await weatherAPI.getCountryWeatherByGeo({ lon: long, lat: latitude}));
+    const weatherAPI: WeatherAPI = new WeatherAPI();
+    res.send(await weatherAPI.getCountryWeatherByGeo({ lon: long, lat: latitude }));
 });
 
 export default router;
